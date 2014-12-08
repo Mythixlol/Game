@@ -12,9 +12,9 @@ public class Jumper extends JComponent {
 	private static final long serialVersionUID = 1L;
 	private int posX = 100;
 	private int posY = 100;
-	private int width = 200;
-	private int height = 200;
-	private Color color = Color.WHITE;
+	private int width = 5;
+	private int height = 5;
+	private Color color = Color.RED;
 	BufferedImage image = null;
 	private boolean jumperMoveUp = false;
 	private boolean jumperMoveDown = false;
@@ -124,39 +124,65 @@ public class Jumper extends JComponent {
 	}
 
 	/**
-	 *
+	 * 
 	 * Bewege um X , Y
-	 *
+	 * 
 	 */
 
 	public void move() {
 
 		if (movement == null) {
 			movement = new Thread(new Runnable() {
+
 				@Override
 				public void run() {
 
 					while (true) {
 
-						if (jumperMoveDown)
+						if (jumperMoveDown) {
 							posY += speed;
-						if (jumperMoveLeft)
+							if ((posY + height) >= w.getHeight()) {
+
+								posY = w.getHeight() - 1 - height;
+							}
+
+						}
+
+						if (jumperMoveLeft) {
 							posX -= speed;
-						if (jumperMoveRight)
+							if (posX <= 0)
+								posX = 1;
+						}
+
+						if (jumperMoveRight) {
 							posX += speed;
-						if (jumperMoveUp)
+							if (posX + width >= w.getWidth())
+								posX = w.getWidth() - 1 - width;
+						}
+
+						if (jumperMoveUp) {
 							posY -= speed;
+							if (posY <= 0)
+								posY = 1;
+						}
+
+						Enemy enemy = w.getEnemy();
+						if ((posX + width > enemy.getPosX() && posX < enemy.getPosX()
+								+ enemy.getWidth())
+								&& (posY + height > enemy.getPosY() && posY < enemy
+										.getPosY() + enemy.getHeight())) {
+							enemy.setColor(Color.black);
+							eatEnemy(enemy);
+						}
 
 						w.paint(w.getGraphics());
 						try {
-							Thread.sleep(20);
+							Thread.sleep(1);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						if (!jumperMoveDown && !jumperMoveLeft && !jumperMoveRight && !jumperMoveRight) {
 
-						}
 					}
 				}
 
@@ -173,4 +199,12 @@ public class Jumper extends JComponent {
 	public void setSpeed(int speed) {
 		this.speed = speed;
 	}
+
+	public void eatEnemy(Enemy e) {
+		width += 10;
+		height += 10;
+		w.spawnEnemy();
+
+	}
+
 }

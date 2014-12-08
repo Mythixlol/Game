@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -11,50 +12,70 @@ import javax.swing.JPanel;
 public class World extends JPanel {
 
 	private Jumper jumper;
-int i = 0;
+	Random r = new Random();
+	int i = 0;
 	public int x;
 	public int y;
-	public String key = "1";
-	private BufferedImage image;
-	
-	
-	public World() {		
-		
-		this.addKeyListener(new JumperKeyListener(this));
-		
-		try {
-			image = ImageIO.read(new File("E:/icon.jpg"));
-		} catch (IOException e) {
+	@SuppressWarnings("unused")
+	private BufferedImage image = null;
+	private Enemy enemy;
 
-			e.printStackTrace();
-		}
-
-		jumper = new Jumper(image, this);
-		jumper.move(); 
+	public World() {
+		calcNewCoords();
+		reset();
 
 	}
 
 	public void paintComponent(Graphics g) {
-		
-		
 		try {
 			Thread.sleep(5);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		super.paintComponent(g);
-		g.drawString("fucker", 10, 20);
 		jumper.draw(g);
-		g.drawString(x + " " + y + "   " + key, 800, 800);
+		enemy.draw(g);
 	}
 
+	public Enemy getEnemy(){
+		return enemy;
+	}
+	
+	public void setEnemy(int x, int y){
+		enemy = new Enemy(x,y);
+	}
+	
 	public Dimension getPreferredSize() {
 		return new Dimension(250, 200);
 	}
 
 	public Jumper getJumper() {
 		return jumper;
+	}
+
+	public void spawnEnemy() {
+		enemy = new Enemy(x, y);
+		calcNewCoords();
+	}
+
+	public void calcNewCoords() {
+
+		x = r.nextInt(500);
+		y = r.nextInt(500);
+	}
+
+	public void reset() {
+
+		try {
+			image = ImageIO.read(new File("E:/icon.jpg"));
+		} catch (IOException e) {
+
+			e.printStackTrace();
+			jumper = new Jumper(this);
+		}
+
+		spawnEnemy();
+		jumper.move();
+
 	}
 
 }

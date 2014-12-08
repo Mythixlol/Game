@@ -36,8 +36,6 @@ public class JumperMouseListener implements MouseListener {
 	public void mousePressed(MouseEvent e) {
 		
 		w.getJumper().moveTo(e.getX(), e.getY());
-		w.x = e.getX();
-		w.y = e.getY();
 		w.paint(w.getGraphics());
 	}
 

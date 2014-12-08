@@ -20,10 +20,11 @@ public class Execution {
 
 	public static void create() {
 		JFrame frame = new JFrame("Fucker");
+		frame.setSize(1200, 700);
 		World world = new World();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(world);
-		frame.setSize(1000, 1000);
+
 		frame.setVisible(true);
 		frame.addKeyListener(new JumperKeyListener(world));
 		frame.addMouseListener(new JumperMouseListener(world));
