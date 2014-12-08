@@ -1,0 +1,195 @@
+package com.example.mythixpost;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import android.os.AsyncTask;
+
+public class PhpController {
+
+	static String url = "http://188.226.196.160/test/testMySQL.php";
+	static HttpClient client = new DefaultHttpClient();
+	static HttpPost httppost = new HttpPost(url);
+	static InputStream messageStream;
+	static BufferedReader bReader;
+	static StringBuilder sBuilder;
+	static String result;
+
+	
+	public static void doSth(){
+		/ Load CAs from an InputStream
+		// (could be from a resource or ByteArrayInputStream or ...)
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		// From https://www.washington.edu/itconnect/security/ca/load-der.crt
+		InputStream caInput = new BufferedInputStream(new FileInputStream("load-der.crt"));
+		Certificate ca;
+		try {
+		    ca = cf.generateCertificate(caInput);
+		    System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+		} finally {
+		    caInput.close();
+		}
+
+		// Create a KeyStore containing our trusted CAs
+		String keyStoreType = KeyStore.getDefaultType();
+		KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+		keyStore.load(null, null);
+		keyStore.setCertificateEntry("ca", ca);
+
+		// Create a TrustManager that trusts the CAs in our KeyStore
+		String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+		TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+		tmf.init(keyStore);
+
+		// Create an SSLContext that uses our TrustManager
+		SSLContext context = SSLContext.getInstance("TLS");
+		context.init(null, tmf.getTrustManagers(), null);
+
+		// Tell the URLConnection to use a SocketFactory from our SSLContext
+		URL urlca = new URL("https://certs.cac.washington.edu/CAtest/");
+		HttpsURLConnection urlConnection =
+		    (HttpsURLConnection)urlca.openConnection();
+		urlConnection.setSSLSocketFactory(context.getSocketFactory());
+		InputStream in = urlConnection.getInputStream();
+		copyInputStreamToOutputStream(in, System.out);
+		
+	}
+	
+	
+	
+	
+	// find user in database
+	public static String isExistentUser(String id) {
+
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+
+		result = "";
+
+		nameValuePair.add(new BasicNameValuePair("isExistentUser", "isExistentUser"));
+		nameValuePair.add(new BasicNameValuePair("phoneNumber", id));
+
+		excecuteThatShit(nameValuePair);
+		return result;
+	}
+
+	// add User to DB at first login
+	public static String addUser(String id, String userName) {
+
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+
+		result = "";
+
+		nameValuePair.add((BasicNameValuePair) new BasicNameValuePair("addUserToDB", "addUserToDB"));
+		nameValuePair.add(new BasicNameValuePair("phoneNumber", id));
+		nameValuePair.add(new BasicNameValuePair("name", userName));
+
+		excecuteThatShit(nameValuePair);
+
+		return result;
+	}
+
+	public static String deleteUser(String id) {
+
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+
+		result = "";
+
+		nameValuePair.add(new BasicNameValuePair("removeUser", "removeUser"));
+		nameValuePair.add(new BasicNameValuePair("phoneNumber", id));
+
+		excecuteThatShit(nameValuePair);
+
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void excecuteThatShit(List<NameValuePair> nameValuePair) {
+		SendPHP sPhp = new SendPHP();
+
+		sPhp.execute(nameValuePair);
+		try {
+			sPhp.get(10000, TimeUnit.MILLISECONDS);
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	static class SendPHP extends AsyncTask<List<NameValuePair>, String, String> {
+		@Override
+		protected String doInBackground(List<NameValuePair>... params) {
+			String asyncResult = "";
+			try {
+				for (List<NameValuePair> l : params) {
+					httppost.setEntity(new UrlEncodedFormEntity(l));
+					HttpResponse response = client.execute(httppost);
+					messageStream = response.getEntity().getContent();
+					PhpController.result = convertToString(messageStream);
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+
+			}
+
+			return asyncResult;
+		}
+
+		// covert InputStream to String
+		public static String convertToString(InputStream is) {
+			BufferedReader r = new BufferedReader(new InputStreamReader(is));
+			StringBuilder total = new StringBuilder();
+			String line;
+
+			try {
+				while ((line = r.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				line = "failed";
+				e.printStackTrace();
+			}
+
+			return total.toString();
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+
+}

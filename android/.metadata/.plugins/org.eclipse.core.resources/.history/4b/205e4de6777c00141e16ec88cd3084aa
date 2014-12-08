@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MythixPost</string>
+    <string name="action_settings">Settings</string>
+
+    <String name="action_close">Close</String>
+    <String name="nickname">Nickname:</String>
+
+</resources>

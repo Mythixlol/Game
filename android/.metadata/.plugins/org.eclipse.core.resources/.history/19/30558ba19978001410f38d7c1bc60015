@@ -1,0 +1,132 @@
+package com.example.mythixpost;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import android.os.AsyncTask;
+import android.widget.Toast;
+
+public class PhpController {
+
+	static String url = "http://188.226.196.160/test/testMySQL.php";
+	static HttpClient client = new DefaultHttpClient();
+	static HttpPost httppost = new HttpPost(url);
+	static InputStream messageStream;
+	static BufferedReader bReader;
+	static StringBuilder sBuilder;
+	static String result;
+	
+
+	// find user in database
+	@SuppressWarnings("unchecked")
+	public static boolean isExistentUser(String id) throws ClientProtocolException {
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+		result = "";
+
+		nameValuePair.add(new BasicNameValuePair("isNewUser", "isNewUser"));
+		nameValuePair.add(new BasicNameValuePair("phoneNumber", id));
+
+		new SendPHP().execute();
+
+		return false;
+
+	}
+
+	// add User to DB at first login
+	@SuppressWarnings("unchecked")
+	public static String addUser(String id, String userName) throws InterruptedException, ExecutionException, TimeoutException {
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+
+		result = "fuck";
+		
+		nameValuePair.add((BasicNameValuePair) new BasicNameValuePair("addUserToDB", "addUserToDB"));
+		nameValuePair.add(new BasicNameValuePair("phoneNumber", id));
+		nameValuePair.add(new BasicNameValuePair("name", userName));
+
+		SendPHP sPhp = new SendPHP();
+		
+		sPhp.execute(nameValuePair);
+		sPhp.get(10000, TimeUnit.MILLISECONDS);
+		
+		return result;
+	}
+
+	public static String deleteUser(String id) {
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+
+		result = "";
+
+		
+		nameValuePair.add(new BasicNameValuePair("removeUser", "removeUser"));
+		nameValuePair.add(new BasicNameValuePair("phoneNumber", id));
+
+		return result;
+	}
+
+	
+	// send encrypted Message
+	public static String sendMessage() {
+
+		return "";
+	}
+	
+	
+
+	static class SendPHP extends AsyncTask<List<NameValuePair>, String, String> {
+		@Override
+		protected String doInBackground(List<NameValuePair>... params) {
+			String asyncResult = "";
+			try {
+				for(List<NameValuePair> l : params){
+				httppost.setEntity(new UrlEncodedFormEntity(l));
+				HttpResponse response = client.execute(httppost);
+				messageStream = response.getEntity().getContent();
+				asyncResult = convertToString(messageStream);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+
+			}
+
+			return asyncResult;
+		}
+
+		protected void onPostExecute(String resultPost) {
+		PhpController.result = resultPost;
+			Toast.makeText(StartActivity.sContext, PhpController.result + "  " + resultPost, Toast.LENGTH_LONG).show();
+
+		}
+
+		public static String convertToString(InputStream is) {
+			BufferedReader r = new BufferedReader(new InputStreamReader(is));
+			StringBuilder total = new StringBuilder();
+			String line;
+			try {
+				while ((line = r.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				line = "failed";
+				e.printStackTrace();
+			}
+			return total.toString();
+		}
+	}
+
+}
