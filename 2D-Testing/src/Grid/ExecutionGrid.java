@@ -3,9 +3,9 @@ package Grid;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-public class Execution {
+public class ExecutionGrid {
 
-	public Execution() {
+	public ExecutionGrid() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -21,14 +21,14 @@ public class Execution {
 	}
 
 	public static void create() {
-		JFrame frame = new JFrame("Fucker");
-		frame.setSize(1200, 700);
-		World world = new World();
+		JFrame frame = new JFrame("Grid");
+		frame.setSize(500, 500);
+		World world = new World(frame);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(world);
 
 		frame.setVisible(true);
-		frame.addKeyListener(new JumperKeyListener(world));
+		frame.addKeyListener(new JumperKeyListener(world, new Snake(250, 250)) );
 		frame.addMouseListener(new JumperMouseListener(world));
 	}
 

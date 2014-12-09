@@ -8,6 +8,9 @@ public class Execution {
 	}
 
 	public static void main(String[] args) {
+		int[][] a = new int[3][3];
+		System.out.println(a.length);
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				create();
