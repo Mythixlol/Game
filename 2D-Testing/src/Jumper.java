@@ -21,8 +21,9 @@ public class Jumper extends JComponent {
 	private boolean jumperMoveLeft = false;
 	private boolean jumperMoveRight = false;
 	private int speed = 5;
-	Thread movement;
 	World w;
+	private Thread t;
+	boolean isRunning = true;
 
 	public Jumper(World w) {
 		this.w = w;
@@ -128,16 +129,15 @@ public class Jumper extends JComponent {
 	 * Bewege um X , Y
 	 * 
 	 */
-
 	public void move() {
 
-		if (movement == null) {
-			movement = new Thread(new Runnable() {
+		if (t == null) {
+			t = new Thread(new Runnable() {
 
 				@Override
 				public void run() {
 
-					while (true) {
+					while (isRunning) {
 
 						if (jumperMoveDown) {
 							posY += speed;
@@ -167,8 +167,8 @@ public class Jumper extends JComponent {
 						}
 
 						Enemy enemy = w.getEnemy();
-						if ((posX + width > enemy.getPosX() && posX < enemy.getPosX()
-								+ enemy.getWidth())
+						if ((posX + width > enemy.getPosX() && posX < enemy
+								.getPosX() + enemy.getWidth())
 								&& (posY + height > enemy.getPosY() && posY < enemy
 										.getPosY() + enemy.getHeight())) {
 							enemy.setColor(Color.black);
@@ -187,9 +187,8 @@ public class Jumper extends JComponent {
 				}
 
 			});
+			t.start();
 		}
-
-		movement.start();
 	}
 
 	public int getSpeed() {

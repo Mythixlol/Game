@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -6,6 +7,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
@@ -19,10 +21,13 @@ public class World extends JPanel {
 	@SuppressWarnings("unused")
 	private BufferedImage image = null;
 	private Enemy enemy;
+	 
 
 	public World() {
+		
 		calcNewCoords();
 		reset();
+		
 
 	}
 
@@ -53,14 +58,18 @@ public class World extends JPanel {
 	}
 
 	public void spawnEnemy() {
+		if(x >= jumper.getX() && x < jumper.getX()+jumper.getWidth() && y>= jumper.getY() && x < jumper.getY()+jumper.getWidth()){
+			calcNewCoords();
+			spawnEnemy();
+		}
 		enemy = new Enemy(x, y);
 		calcNewCoords();
 	}
 
 	public void calcNewCoords() {
 
-		x = r.nextInt(500);
-		y = r.nextInt(500);
+		x = r.nextInt(1100);
+		y = r.nextInt(600);
 	}
 
 	public void reset() {
@@ -74,7 +83,7 @@ public class World extends JPanel {
 		}
 
 		spawnEnemy();
-		jumper.move();
+//		jumper.move();
 
 	}
 

@@ -3,9 +3,12 @@ package Grid;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class JumperMouseListener implements MouseListener {
+public class SnakeMouseListener implements MouseListener {
 
-	public JumperMouseListener(World w) {
+	private SnakeWorld world;
+	
+	public SnakeMouseListener(SnakeWorld w) {
+	this.world = w; 
 	}
 
 	@Override
@@ -28,7 +31,9 @@ public class JumperMouseListener implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-
+	
+		
+		
 	}
 
 	@Override

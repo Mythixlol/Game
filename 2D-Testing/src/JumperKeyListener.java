@@ -10,7 +10,7 @@ public class JumperKeyListener implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-
+		w.getJumper().move(); 
 		switch (e.getExtendedKeyCode()) {
 		case 32: {
 			w.getJumper().setJumperMoveLeft(true);
@@ -54,6 +54,7 @@ public class JumperKeyListener implements KeyListener {
 		case 37: {
 			w.getJumper().setJumperMoveLeft(false);
 			
+			
 		}
 			break;
 		case 38: {
@@ -73,7 +74,8 @@ public class JumperKeyListener implements KeyListener {
 			break;
 
 		}
-
+		
+		
 		w.print(w.getGraphics());
 
 	}

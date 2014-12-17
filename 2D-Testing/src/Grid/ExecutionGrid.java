@@ -23,13 +23,15 @@ public class ExecutionGrid {
 	public static void create() {
 		JFrame frame = new JFrame("Grid");
 		frame.setSize(500, 500);
-		World world = new World(frame);
+		SnakeWorld world = new SnakeWorld(frame);
+		frame.addKeyListener(new SnakeKeyListener(world));
+		frame.addMouseListener(new SnakeMouseListener(world));
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		frame.add(world);
 
 		frame.setVisible(true);
-		frame.addKeyListener(new JumperKeyListener(world, new Snake(250, 250)) );
-		frame.addMouseListener(new JumperMouseListener(world));
+		;
 	}
-
 }
