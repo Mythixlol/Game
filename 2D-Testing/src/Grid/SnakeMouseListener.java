@@ -5,10 +5,8 @@ import java.awt.event.MouseListener;
 
 public class SnakeMouseListener implements MouseListener {
 
-	private SnakeWorld world;
-	
 	public SnakeMouseListener(SnakeWorld w) {
-	this.world = w; 
+
 	}
 
 	@Override
@@ -31,9 +29,7 @@ public class SnakeMouseListener implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-	
-		
-		
+
 	}
 
 	@Override

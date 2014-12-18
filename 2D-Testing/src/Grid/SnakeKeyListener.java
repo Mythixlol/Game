@@ -23,30 +23,38 @@ public class SnakeKeyListener implements KeyListener {
 			}
 				break;
 			case 37: {
-				snake.stop();
-				snake.left = true;
-//				snake.move();
+				if (!snake.right && !snake.left) {
+					snake.stop();
+					snake.left = true;
+					// snake.move();
+				}
 			}
 				break;
 
 			case 38: {
-				snake.stop();
-				snake.up = true;
-//				snake.move();
+				if (!snake.down && !snake.up) {
+					snake.stop();
+					snake.up = true;
+					// snake.move();
+				}
 			}
 				break;
 
 			case 39: {
-				snake.stop();
-				snake.right = true;
-//				snake.move();
+				if (!snake.left && !snake.right) {
+					snake.stop();
+					snake.right = true;
+					// snake.move();
+				}
 			}
 				break;
 
 			case 40: {
-				snake.stop();
-				snake.down = true;
-//				snake.move();
+				if (!snake.up && !snake.down) {
+					snake.stop();
+					snake.down = true;
+					// snake.move();
+				}
 			}
 				break;
 
@@ -57,6 +65,7 @@ public class SnakeKeyListener implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+		
 
 	}
 
