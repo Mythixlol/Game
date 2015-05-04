@@ -13,7 +13,7 @@ public class World extends JPanel {
 
 	private Jumper jumper;
 	Random r = new Random();
-	int i = 0;
+	//int i = 0;
 	public int x;
 	public int y;
 	@SuppressWarnings("unused")

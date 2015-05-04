@@ -15,20 +15,21 @@ public class Snake {
 	public boolean up = false;
 	public boolean down = false;
 	Deque<Square> body = new LinkedList<Square>();
-	int speed = 100;
+	public int speed = 0 ;			//Snakeworld.snakespeed
 
 	public Snake(int x, int y, SnakeWorld world) {
 		this.world = world;
 
 		headIndexX = x;
 		headIndexY = y;
-
+		
 		move();
 	}
 
 	public void addToBody(Square square) {
 		body.addLast(square);
 		square.isSnake = true;
+		square.borderColor = Color.RED;
 
 	}
 
@@ -40,6 +41,7 @@ public class Snake {
 		Square s = body.removeLast();
 
 		s.setFillColor(Color.WHITE);
+		s.borderColor = Color.WHITE;
 		s.isSnake = false;
 
 	}
@@ -68,6 +70,8 @@ public class Snake {
 		world.getSquare(headIndexX, headIndexY).isSnake = true;
 		for (Square square : body) {
 			square.setFillColor(Color.BLUE);
+			square.setBoarderColor(Color.BLUE);
+			
 		}
 	}
 
@@ -109,9 +113,13 @@ public class Snake {
 
 						}
 						checkCollision();
-						eatEnemy();
+						if (world.getEnemySquare() != null) {
+							eatEnemy();
+
+						}
 
 						try {
+							
 							Thread.sleep(speed);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
@@ -143,7 +151,7 @@ public class Snake {
 			headIndexX--;
 		} else {
 
-			System.out.println("tot");
+			System.out.println(headIndexX);
 			stop();
 			world.restart();
 		}
@@ -157,7 +165,7 @@ public class Snake {
 			removeFromBody();
 			headIndexX++;
 		} else {
-			System.out.println("tot");
+			System.out.println(headIndexX);
 			stop();
 			world.restart();
 		}

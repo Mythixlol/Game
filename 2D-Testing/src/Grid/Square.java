@@ -9,8 +9,8 @@ public class Square {
 	private int posY;
 	private int width;
 	private int height;
-	Color squareColor = Color.WHITE;
-	Color borderColor = Color.white;
+	public Color  squareColor = Color.WHITE;
+	public Color borderColor = Color.WHITE;
 	public boolean isDrawn = false;
 	public boolean isSnake = false; 
 	public boolean isEnemy = false;
@@ -24,6 +24,9 @@ public class Square {
 		
 	public void setFillColor(Color c) {
 		this.squareColor = c;
+	}
+	public void setBoarderColor(Color c){
+		this.borderColor = c;
 	}
 
 	public int getPosX() {

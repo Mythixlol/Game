@@ -10,16 +10,17 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class SnakeWorld extends JPanel {
 
-	private int squareWidth = 30;
-	private int squareHeight = 30;
+	private int squareWidth = 20;
+	private int squareHeight = 20;
+	private int snakeSpeed = 100;
 	private int worldWidth;
 	private int worldHeight;
 	Square[][] squares;
 	Snake snake;
 	public boolean drawNow = true;
-	private Square enemySquare = null; 
-	
-	
+	private Square enemySquare = null;
+	boolean created = false;
+
 	public SnakeWorld(JFrame frame) {
 
 		worldWidth = frame.getWidth() / squareWidth;
@@ -28,7 +29,9 @@ public class SnakeWorld extends JPanel {
 		createWorld();
 		Random r = new Random();
 		snake = new Snake(r.nextInt(worldWidth), r.nextInt(worldHeight), this);
-		
+		snake.speed = snakeSpeed;
+		spawnEnemy();
+		created = true; 
 	}
 
 	public void createWorld() {
@@ -37,7 +40,9 @@ public class SnakeWorld extends JPanel {
 				squares[i][k] = new Square(i, k, squareWidth, squareHeight);
 			}
 		}
-		spawnEnemy();
+		if (created) {
+			spawnEnemy();
+		}
 	}
 
 	public Snake getSnake() {
@@ -62,14 +67,23 @@ public class SnakeWorld extends JPanel {
 			}
 		}
 	}
-	
-	public void spawnEnemy(){
-		Random r = new Random(); 
+
+	public void spawnEnemy() {
+		Random r = new Random();
+
 		int x = r.nextInt(squares.length);
+		int y = r.nextInt(squareWidth);
 		Square s = squares[x][r.nextInt(squares[x].length)];
+		for (Square square : snake.body) {
+			if (square == s) {
+				return;
+			}
+		}
 		s.setFillColor(Color.YELLOW);
-		s.isEnemy = true; 
-		enemySquare = s; 
+
+		s.isEnemy = true;
+		enemySquare = s;
+
 	}
 
 	public Square getSquare(int indexX, int indexY) {
@@ -83,8 +97,7 @@ public class SnakeWorld extends JPanel {
 	public int getWorldHeight() {
 		return worldHeight;
 	}
-	
-	
+
 	public Square getEnemySquare() {
 		return enemySquare;
 	}
@@ -92,10 +105,10 @@ public class SnakeWorld extends JPanel {
 	public void setEnemySquare(Square enemySquare) {
 		this.enemySquare = enemySquare;
 	}
-	
-	public void restart(){
+
+	public void restart() {
 		createWorld();
 		snake.body.clear();
-		
+
 	}
 }
